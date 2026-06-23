@@ -1,0 +1,6 @@
+Sites:
+{{- range .Values.sites }}
+{{- $image := default dict .image }}
+{{- $ingress := default dict .ingress }}
+  - {{ .name }}: {{ $image.repository }}:{{ default $.Chart.AppVersion $image.tag }} ingress={{ default false $ingress.enabled }}
+{{- end }}

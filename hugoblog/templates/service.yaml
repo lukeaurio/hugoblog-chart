@@ -1,0 +1,20 @@
+{{- range .Values.sites }}
+{{- $site := . }}
+{{- $service := default dict $site.service }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hugoblog.siteFullname" (dict "root" $ "site" $site) }}
+  labels:
+    {{- include "hugoblog.siteLabels" (dict "root" $ "site" $site) | nindent 4 }}
+spec:
+  type: {{ default $.Values.defaults.serviceType $service.type }}
+  ports:
+    - port: {{ default $.Values.defaults.servicePort $service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "hugoblog.siteSelectorLabels" (dict "root" $ "site" $site) | nindent 4 }}
+{{- end }}

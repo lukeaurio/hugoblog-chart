@@ -1,0 +1,40 @@
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+defaults:
+  replicaCount: 1
+  imagePullPolicy: IfNotPresent
+  serviceType: ClusterIP
+  servicePort: 80
+
+podSecurityContext: {}
+securityContext: {}
+
+sites:
+  - name: blog-willberto-biz
+    replicaCount: 1
+    image:
+      repository: ghcr.io/willberto/blog-willberto-biz
+      pullPolicy: IfNotPresent
+      tag: latest
+    service:
+      type: ClusterIP
+      port: 80
+    ingress:
+      enabled: false
+      className: ""
+      annotations: {}
+      hosts:
+        - host: blog.willberto.biz
+          paths:
+            - path: /
+              pathType: Prefix
+      tls: []
+    podAnnotations: {}
+    podLabels: {}
+    resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

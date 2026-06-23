@@ -1,0 +1,68 @@
+{{- range .Values.sites }}
+{{- $site := . }}
+{{- $image := default dict $site.image }}
+{{- $service := default dict $site.service }}
+{{- $podAnnotations := default dict $site.podAnnotations }}
+{{- $podLabels := default dict $site.podLabels }}
+{{- $resources := default dict $site.resources }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hugoblog.siteFullname" (dict "root" $ "site" $site) }}
+  labels:
+    {{- include "hugoblog.siteLabels" (dict "root" $ "site" $site) | nindent 4 }}
+spec:
+  replicas: {{ default $.Values.defaults.replicaCount $site.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hugoblog.siteSelectorLabels" (dict "root" $ "site" $site) | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- toYaml $podAnnotations | nindent 8 }}
+      labels:
+        {{- include "hugoblog.siteSelectorLabels" (dict "root" $ "site" $site) | nindent 8 }}
+        {{- with $podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ include "hugoblog.siteName" (dict "root" $ "site" $site) }}
+          securityContext:
+            {{- toYaml $.Values.securityContext | nindent 12 }}
+          image: "{{ required "site image.repository is required" $image.repository }}:{{ default $.Chart.AppVersion $image.tag }}"
+          imagePullPolicy: {{ default $.Values.defaults.imagePullPolicy $image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml $resources | nindent 12 }}
+      {{- with $.Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
