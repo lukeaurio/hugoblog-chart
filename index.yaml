@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  hugoblog:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-06-24T05:59:58.412570892Z"
+    description: Helm chart for the Hugo blog
+    digest: d3049c1b4dceb9c0abe8045405b113f15426d54666a2b7f1ec084501a0d27414
+    name: hugoblog
+    type: application
+    urls:
+    - https://github.com/lukeaurio/hugoblog-chart/releases/download/hugoblog-0.1.0/hugoblog-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-06-24T05:59:58.412579044Z"
