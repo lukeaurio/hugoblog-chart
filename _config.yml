@@ -1,3 +1,3 @@
-theme: Hacker
+theme: jekyll-theme-hacker
 title: Hugo Blog Chart Releaser 
 subtitle: A Helm chart for deploying statically packaged Hugo blogs
