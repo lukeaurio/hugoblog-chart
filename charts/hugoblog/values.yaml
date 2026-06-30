@@ -1,4 +1,6 @@
-imagePullSecrets: []
+imagePullSecrets: [
+  name: <SomeSecretName>
+]
 nameOverride: ""
 fullnameOverride: ""
 
